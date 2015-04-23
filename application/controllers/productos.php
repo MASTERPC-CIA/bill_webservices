@@ -15,7 +15,7 @@ class Productos extends REST_Controller {
 
     }
 
-     
+    /* Esta funcion es para obtener todos los produco registrados en el sistema */
     function all_get()
     {
         //obtenemos los datos y entradas de todos los productos al no pasarle

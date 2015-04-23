@@ -1,6 +1,50 @@
-<IfModule authz_core_module>
-    Require all denied
-</IfModule>
-<IfModule !authz_core_module>
-    Deny from all
-</IfModule>
+<IfModule mod_rewrite.c>
+ 
+    RewriteEngine On
+    RewriteBase /
+ 
+    ### Canonicalize CodeIgniter URLs
+ 
+    # Si su controlador por defecto es algo más que
+    # "Bienvenida" probablemente debería cambiar esta
+    RewriteRule ^ (bienvenidos ( / index ) |?.? índice (\ php))? / $ / [L, R = 301]
+    RewriteRule ^ (. *) / index / ? $ $ 1 [L, R = 301]
+ 
+    # Elimina barras al final (SEO evita problemas de contenido duplicado)
+    RewriteCond% {REQUEST_FILENAME}! -d
+    RewriteRule ^ (. +) / $ $ 1 [L, R = 301]
+ 
+    # Hacer cumplir www
+    # Si tiene subdominios, puede agregarlos a 
+    # La lista con el "|" (OR) operador regex
+    RewriteCond% {HTTP_HOST} ^! (Www | subdominio) [NC]
+    (. *) RewriteRule ^ $ http: // www .domain.tld / $ 1 [L, R = 301]
+ 
+    # Hacer cumplir NO www
+    #RewriteCond% {HTTP_HOST} ^ www [NC]
+    #RewriteRule ^ $ (*.) http: //domain.tld/ $ 1 [L, R = 301]
+ 
+    ###
+ 
+    # Elimina el acceso a la carpeta del sistema por los usuarios.
+    # Además esto le permitirá crear un controlador System.php,
+    # Previamente esta no habría sido posible.
+    # "Sistema" puede ser reemplazado si ha cambiado el nombre de la carpeta del sistema.
+    RewriteCond% {} ^ REQUEST_URI sistema. *
+    RewriteRule ^ (. *) $ / index .php / $ 1 [L]
+ 
+    # Comprueba si el usuario intenta acceder a un archivo válido,
+    # Tales como un documento de imagen o css, si esto no es cierto que envía el
+    # Petición a index.php
+    RewriteCond% {REQUEST_FILENAME}! -f
+    RewriteCond% {REQUEST_FILENAME}! -d
+    RewriteRule ^ (. *) $ Index.php / $ 1 [L]
+ 
+< / IfModule >
+ 
+<IfModule! Mod_rewrite.c>
+ 
+    # Sin mod_rewrite, 404 rutas de al controlador frontal
+    ErrorDocument 404 / index .php
+ 
+< / IfModule >

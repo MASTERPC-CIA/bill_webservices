@@ -15,13 +15,11 @@ class Productos extends REST_Controller {
 
     }
 
-    /* Esta funcion es para obtener todos los produco registrados en el sistema */
+    /* Esta funcion es para obtener todos los productos registrados en el sistema*/
     function all_get()
     {
-        //obtenemos los datos y entradas de todos los productos al no pasarle
-        //ningún argumento a la consulta
         $data['get_producto_all'] = $this->consultas_model->get_producto_all();
-        $this->response($data, 200);
+        $this->response($data);
     }
     //devuelve el stock disponible del producto 
     function stockDisponible_get($id)
